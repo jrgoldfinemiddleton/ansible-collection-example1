@@ -15,7 +15,7 @@
     home: "{{ user.home | d(omit) }}"
     local: "{{ user.local | d(omit) }}"
     login_class: "{{ user.login_class | d(omit) }}"
-    move_home: "{{ user.move_home | d(omot) }}"
+    move_home: "{{ user.move_home | d(omit) }}"
     name: "{{ user.name | d(user | d(omit)) }}"
     non_unique: "{{ user.non_unique | d(omit) }}"
     password: "{{ user.password | d(omit) }}"
