@@ -1,0 +1,15 @@
+namespace: jasongol
+name: example1
+version: 1.0.0
+readme: README.md
+authors:
+  - Jason Goldfine-Middleton (@jrgoldfinemiddleton)
+description: Example Ansible collection with GitHub Actions CI
+license_file: LICENSE
+tags:
+  - linux
+repository: https://github.com/jrgoldfinemiddleton/ansible-collection-example1.git
+documentation: https://github.com/jrgoldfinemiddleton/ansible-collection-example1.git
+homepage: https://github.com/jrgoldfinemiddleton/ansible-collection-example1
+issues: https://github.com/jrgoldfinemiddleton/ansible-collection-example1/issues
+
