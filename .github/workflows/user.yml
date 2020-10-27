@@ -32,32 +32,32 @@ jobs:
         collection_role:
           - user
 
-      steps:
-        - name: Check out the code base
-          uses: actions/checkout@v2
+    steps:
+      - name: Check out the code base
+        uses: actions/checkout@v2
 
-        - name: Set up Python 3
-          uses: actions/setup-python@v2
-          with:
-            python-version: "3.x"
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
 
-        - name: Install test dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install -r molecule/requirements.txt
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r molecule/requirements.txt
 
-        - name: Build the collection
-          run: |
-            collection_file=$(basename $(ansible-galaxy collection build -f | awk -F " " '{print $NF}'))
-            echo "::set-env name=COLLECTION_FILE::$collection_file"
+      - name: Build the collection
+        run: |
+          collection_file=$(basename $(ansible-galaxy collection build -f | awk -F " " '{print $NF}'))
+          echo "::set-env name=COLLECTION_FILE::$collection_file"
 
-        - name: Install the collection
-          run: ansible-galaxy collection install $COLLECTION_FILE
+      - name: Install the collection
+        run: ansible-galaxy collection install $COLLECTION_FILE
 
-        - name: Run Molecule tests
-          run: molecule test -s ${{ matrix.collection_role }}
-          env:
-            PY_COLORS: "1"
-            ANSIBLE_FORCE_COLOR: "1"
-            MOLECULE_CONTAINER: ${{ matrix.molecule_distro.container }}
-            MOLECULE_IMAGE: ${{ matrix.molecule_distro.image }}
+      - name: Run Molecule tests
+        run: molecule test -s ${{ matrix.collection_role }}
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+          MOLECULE_CONTAINER: ${{ matrix.molecule_distro.container }}
+          MOLECULE_IMAGE: ${{ matrix.molecule_distro.image }}
