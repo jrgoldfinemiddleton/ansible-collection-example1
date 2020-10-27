@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+
+platforms:
+  - name: user-${MOLECULE_CONTAINER:-centos}
+    image: ${MOLECULE_IMAGE-"geerlingguy/docker-centos8-ansible"}
+    privileged: True
+    pre_build_image: True
+    networks:
+      - name: user
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - user
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  env:
+    ANSIBLE_REMOTE_TMP: /tmp/
+    ANSIBLE_COLLECTIONS_PATHS: $HOME/.ansible/collections/ansible_collections/jasongol/example1
+    ANSIBLE_ROLES_PATH: $HOME/.ansible/collections/ansible_collections/jasongol/example1/roles
+  inventory:
+    group_vars:
+      all:
+        user_list:
+          - name: jrgoldfinemiddleton
+            password: totalsecret
+            state: present
+          - name: samuel
+            password: 5realscrete
+            system: false
+          - name: nothere
+            state: absent
+
+verifier:
+  name: ansible

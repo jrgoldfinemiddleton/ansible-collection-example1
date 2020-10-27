@@ -1,0 +1,63 @@
+---
+name: "jasongol.example1.user"
+on:
+  push:
+    paths:
+      - "roles/user/**"
+      - "molecule/user/**"
+      - ".github/workflows/user.yml"
+  pull_request:
+    paths:
+      - "roles/user/**"
+      - "molecule/user/**"
+      - ".github/workflows/user.yml"
+jobs:
+  molecule:
+    name: Molecule - user
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        molecule_distro:
+          - container: centos
+            image: geerlingguy/docker-centos8-ansible:latest
+          - container: debian
+            image: geerlingguy/docker-debian9-ansible:latest
+          - container: ubuntu
+            image: geerlingguy/docker-ubuntu2004-ansible:latest
+          - container: ubuntu
+            image: geerlingguy/docker-ubuntu1804-ansible:latest
+          - container: ubuntu
+            image: geerlingguy/docker-ubuntu1604-ansible:latest
+        collection_role:
+          - user
+
+      steps:
+        - name: Check out the code base
+          uses: actions/checkout@v2
+
+        - name: Set up Python 3
+          uses: actions/setup-python@v2
+          with:
+            python-version: "3.x"
+
+        - name: Install test dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r molecule/requirements.txt
+
+        - name: Build the collection
+          run: |
+            collection_file=$(basename $(ansible-galaxy collection build -f | awk -F " " '{print $NF}'))
+            echo "::set-env name=COLLECTION_FILE::$collection_file"
+
+        - name: Install the collection
+          run: ansible-galaxy collection install $COLLECTION_FILE
+
+        - name: Run Molecule tests
+          run: molecule test -s ${{ matrix.collection_role }}
+          env:
+            PY_COLORS: "1"
+            ANSIBLE_FORCE_COLOR: "1"
+            MOLECULE_CONTAINER: ${{ matrix.molecule_distro.container }}
+            MOLECULE_IMAGE: ${{ matrix.molecule_distro.image }}
